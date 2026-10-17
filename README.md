@@ -20,7 +20,7 @@
 * **Geolocation Support**: Center the map on your current location with a single click.
 * **Mobile QR Sharing**: Instantly generate and display a QR code for the current tour URL to easily open it on mobile devices.
 * **Zero Dependencies / Simple Setup**: Requires no heavy build tools or databases—just drop it into a directory with your photos and GPX files.
-* **Nice image Names**: Rename your images before upload or after upload in `min` and `img`
+* **Nice image names**: Rename your images before upload or after upload in `min` and `img`
 
 ## Project Structure
 
