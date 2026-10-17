@@ -4,7 +4,9 @@
 
 **Demo**: **[https://ahrens.tk/Bourtange](https://ahrens.tk/Bourtange** (more images than the download version)
 
-## Features
+**Notice**: This application is for private use only. For public or commercial usage, please ensure compliance with the terms of service and privacy policies of third-party map providers (OpenStreetMap and Esri).
+
+##Features
 
 * **Interactive Map Viewer:** Switch seamlessly between OpenStreetMap and Esri satellite layers.
 * **GPX Track Rendering:** Automatically loads and styles multiple GPX routes from the local directory.
