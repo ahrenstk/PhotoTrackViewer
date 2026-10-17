@@ -1,6 +1,6 @@
-# MapTourzz
+# PhotoTrackViewer
 
-**MapTourzz** is a lightweight, single-page web application built with PHP and Leaflet.js that transforms your travel photos and GPX tracks into an interactive map-based tour viewer. You can use `index.php` with local copys of external CSS and JavaScript or `index-cdn.php` for loading CSS and JavaScript from CDNs.
+**PhotoTrackViewer** is a lightweight, single-page web application built with PHP and Leaflet.js that transforms your travel photos and GPX tracks into an interactive map-based tour viewer. You can use `index.php` with local copys of external CSS and JavaScript or `index-cdn.php` for loading CSS and JavaScript from CDNs.
 
 **Demo**: **[https://ahrens.tk/Bourtange](https://ahrens.tk/Bourtange)** (more images than the download version)
 
