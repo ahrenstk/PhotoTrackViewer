@@ -20,9 +20,12 @@
 
 ```text
 ├── index.php         # Main application file (Backend PHP logic + Frontend UI/JS)
-├── img/              # Full-size original images
+|── upload.php        # Upload software to upload images and gpx-files
+├── index-cdn.php     # Main application file (Backend PHP logic + Frontend UI/JS) (version with CDNs)
+|── upload-cdn.php    # Upload software to upload images and gpx-files (version with CDNs)
+├── img/              # Full-size original images (set resize in uplaod.php or upload-cdn.php or change on your own)
 ├── min/              # Thumbnail images (used for map markers)
-└── gpx/              # GPX track files
+└── gpx/              # GPX track files (optional)
 
 ```
 
