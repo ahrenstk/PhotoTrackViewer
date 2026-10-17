@@ -13,13 +13,14 @@
 
 ##Features
 
-* **Interactive Map Viewer:** Switch seamlessly between OpenStreetMap and Esri satellite layers.
-* **GPX Track Rendering:** Automatically loads and styles multiple GPX routes from the local directory.
-* **EXIF Photo Integration:** Asynchronously extracts GPS coordinates and timestamps from image EXIF data using `piexifjs` to place thumbnail markers directly onto the map.
-* **Rich Image Modal:** Click any thumbnail to view the full-size photo, browse through the gallery with built-in navigation, and view capture dates and precise coordinate links (Google Maps, BRouter, or native device mapping apps).
-* **Geolocation Support:** Center the map on your current location with a single click.
-* **Mobile QR Sharing:** Instantly generate and display a QR code for the current tour URL to easily open it on mobile devices.
-* **Zero Dependencies / Simple Setup:** Requires no heavy build tools or databases—just drop it into a directory with your photos and GPX files.
+* **Interactive Map Viewer**: Switch seamlessly between OpenStreetMap and Esri satellite layers.
+* **GPX Track Rendering**: Automatically loads and styles multiple GPX routes from the local directory.
+* **EXIF Photo Integration**: Asynchronously extracts GPS coordinates and timestamps from image EXIF data using `piexifjs` to place thumbnail markers directly onto the map.
+* **Rich Image Modal**: Click any thumbnail to view the full-size photo, browse through the gallery with built-in navigation, and view capture dates and precise coordinate links (Google Maps, BRouter, or native device mapping apps).
+* **Geolocation Support**: Center the map on your current location with a single click.
+* **Mobile QR Sharing**: Instantly generate and display a QR code for the current tour URL to easily open it on mobile devices.
+* **Zero Dependencies / Simple Setup**: Requires no heavy build tools or databases—just drop it into a directory with your photos and GPX files.
+* **Nice image Names**: Rename your images before upload or after upload in `min` and `img`
 
 ## Project Structure
 
