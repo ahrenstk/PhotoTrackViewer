@@ -3,7 +3,7 @@
 
 MIT License
 
-Copyright (c) 2026 Heinz Ahrens https://github.com/ahrenstk/MapTourzz
+Copyright (c) 2026 Heinz Ahrens https://github.com/ahrenstk/PhotoTrackViewer
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
