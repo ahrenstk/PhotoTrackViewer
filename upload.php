@@ -25,7 +25,6 @@ SOFTWARE.
 
 ----------------------------------------------------------------------------- */
 
-<?php
 setlocale(LC_ALL, 'de_DE.UTF-8');
 
 function err($code, $msg) {
