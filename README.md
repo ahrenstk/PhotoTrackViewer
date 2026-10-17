@@ -7,7 +7,6 @@
 **Notice**: This application is for private use only. For public or commercial usage, please ensure compliance with the terms of service and privacy policies of third-party map providers (OpenStreetMap and Esri).
 
 
-![MapTourzz](https://github.com/ahrenstk/MapTourzz/blob/main/MapTourzz.jpg)
 
 ##Features
 
