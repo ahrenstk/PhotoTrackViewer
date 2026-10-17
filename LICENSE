@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Heinz Ahrens
+Copyright (c) 2026 Heinz Ahrens https://github.com/ahrenstk/MapTourzz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+---
+
+## Third-Party Software Notices
+
+This project incorporates third-party open-source libraries. Below are the details and licenses for these included dependencies:
+
+### 1. Leaflet.js (v1.9.4)
+- **Source:** `https://unpkg.com/leaflet@1.9.4/dist/leaflet.js`
+- **License:** 2-Clause BSD License
+- **Copyright:** (c) Volodymyr Agafonkin
+
+### 2. leaflet-gpx (v1.7.0)
+- **Source:** `https://unpkg.com/leaflet-gpx@1.7.0/gpx.js`
+- **License:** 2-Clause BSD License
+- **Copyright:** (c) Pavel Shramov
+
+### 3. Leaflet.Locate (v0.84.2)
+- **Source:** `https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.84.2/L.Control.Locate.min.js`
+- **License:** MIT License
+- **Copyright:** (c) Dominik Moritz
+
+### 4. Piexifjs
+- **Source:** `https://cdn.jsdelivr.net/npm/piexifjs`
+- **License:** MIT License
+- **Copyright:** (c) hshft
+
+### 5. QRCode.js
+- **Source:** `https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js`
+- **License:** MIT License
+- **Copyright:** (c) Sangmin Shim
