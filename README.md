@@ -15,19 +15,18 @@
 
 * **Interactive Map Viewer**: Switch seamlessly between OpenStreetMap and Esri satellite layers.
 * **GPX Track Rendering**: Automatically loads and styles multiple GPX routes from the local directory.
-* **EXIF Photo Integration**: Asynchronously extracts GPS coordinates and timestamps from image EXIF data using `piexifjs` to place thumbnail markers directly onto the map.
+* **EXIF Photo Integration**: Extracts GPS coordinates and timestamps from image EXIF data using `piexifjs` to place thumbnail markers directly onto the map.
 * **Rich Image Modal**: Click any thumbnail to view the full-size photo, browse through the gallery with built-in navigation, and view capture dates and precise coordinate links (Google Maps, BRouter, or native device mapping apps).
 * **Geolocation Support**: Center the map on your current location with a single click.
 * **Mobile QR Sharing**: Instantly generate and display a QR code for the current tour URL to easily open it on mobile devices.
 * **Zero Dependencies / Simple Setup**: Requires no heavy build tools or databases—just drop it into a directory with your photos and GPX files.
-* **Nice image names**: Rename your images before upload or after upload in `min` and `img`
-* **German time language**: set html-lang-tag to "de" for german time language
+* **Nice image names**: Rename your images before upload or after upload in `min` and `img` for better names
 
 ## Project Structure
 
 ```text
 ├── index.php         # Main application file (Backend PHP logic + Frontend UI/JS)
-|── upload.php        # Upload software to upload images and gpx-files
+|── upload.php        # Upload software to upload images and gpx-files (use optional)
 ├── index-cdn.php     # Main application file (Backend PHP logic + Frontend UI/JS) (version with CDNs)
 |── upload-cdn.php    # Upload software to upload images and gpx-files (version with CDNs)
 ├── img/              # Full-size original images (set resize in uplaod.php or upload-cdn.php or change on your own)
@@ -43,11 +42,11 @@
 
 ## Getting Started
 
-1. Place `index.php` in your web server directory.
-2. Create three subfolders: `img/`, `min/`, and `gpx/` or use upload.php
-3. Add your full-size photos to `img/` and their corresponding resized thumbnail versions to `min/`.
-4. Add your `.gpx` track files to the `gpx/` folder.
-5. Open the directory in your browser to explore your interactive tour!
+1. Unzip PhotoTrackViewer.zip in a folder
+2. Open the website to test with the pictures and gpx-track from my demo ([Fortress Bourtange](https://www.bourtange.co.uk) 
+4. Delete content or folders `min`, `img` and `gpx
+5. Upload images and gpx-tracks e.g. with `upload.php` or manually
+8. Open website again
 
 ## License
 
