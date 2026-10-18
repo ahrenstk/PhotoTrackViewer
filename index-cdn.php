@@ -57,7 +57,7 @@ $title =$currentDir;
 
 
 <!DOCTYPE html>
-<html lang="en">  // change here to "de" for german time setting
+<html lang="en">  <!-- change here to "de" for german time setting -->
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
