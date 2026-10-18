@@ -314,14 +314,8 @@ $title = $currentDir;
          }
       </style>
       <link rel="icon" href="data:," />
-      <link
-         rel="stylesheet"
-         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      />
-      <link
-         rel="stylesheet"
-         href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.84.2/L.Control.Locate.css"
-      />
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.84.2/L.Control.Locate.css" />
    </head>
    <body>
 		<div id="map"></div>
