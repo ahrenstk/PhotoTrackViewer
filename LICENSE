@@ -51,3 +51,11 @@ This project incorporates third-party open-source libraries. Below are the detai
 - **Source:** `https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js`
 - **License:** MIT License
 - **Copyright:** (c) Sangmin Shim
+
+### 6. Pica
+- **Source:" `https://github.com/nodeca/pica`
+- **License:** MIT License
+- **Copyright:** (c) 2014-2021 Vitaly Puzrin
+
+
+
