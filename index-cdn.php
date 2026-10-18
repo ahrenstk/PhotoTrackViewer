@@ -365,529 +365,398 @@ $title = $currentDir;
       <script src="https://cdn.jsdelivr.net/npm/piexifjs"></script>
       <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
       <script>
-         let currentImageIndex = 0;
-         const crosshairSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 34.89">
-           <path d="M2.5 8.11c-1.26 1.34-2.05 3.3-2.02 5.14 0.06 3.84 1.8 5.3 4.57 10.59 1 2.33 2.04 4.79 3.03 8.87 0.14 0.6 0.27 1.16 0.33 1.21 0.06 0.05 0.2-0.51 0.33-1.11 0.99-4.08 2.03-6.54 3.03-8.87 2.77-5.29 4.5-6.75 4.57-10.59 0.03-1.84-0.76-3.8-2.02-5.14-1.44-1.53-3.61-2.67-5.92-2.72-2.31-0.05-4.48 1.09-5.92 2.62z" fill="#ff4646" stroke="#d73534" stroke-width="1"/>
-           <circle cx="10" cy="14.87" r="3.04" fill="#590000"/>
-         </svg>`;
-         const ua = navigator.userAgent || navigator.vendor || window.opera;
-         const greenCrosshairSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 34.89">
-           <path d="M2.5 8.11c-1.26 1.34-2.05 3.3-2.02 5.14 0.06 3.84 1.8 5.3 4.57 10.59 1 2.33 2.04 4.79 3.03 8.87 0.14 0.6 0.27 1.16 0.33 1.21 0.06 0.05 0.2-0.51 0.33-1.11 0.99-4.08 2.03-6.54 3.03-8.87 2.77-5.29 4.5-6.75 4.57-10.59 0.03-1.84-0.76-3.8-2.02-5.14-1.44-1.53-3.61-2.67-5.92-2.72-2.31-0.05-4.48 1.09-5.92 2.62z" fill="#46ff46" stroke="#34d735" stroke-width="1"/>
-           <circle cx="10" cy="14.87" r="3.04" fill="#005900"/>
-         </svg>`;
 
-         const galleryControl = L.control({ position: 'topright' });
 
-         function addQrButton(map) {
-             const qrControl = L.control({ position: "topright" });
-             qrControl.onAdd = function() {
-                 const div = L.DomUtil.create("div", "qr-button");
-                 div.title = "Show QR-Code";
-
-                 div.innerHTML = `
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black">
-                         <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zM13 13h2v2h-2v-2zm0 3h2v2h-2v-2z"/>
-                     </svg>`;
-                 L.DomEvent.disableClickPropagation(div);
-                 div.onclick = function() {
-                     if (typeof openQRModal === "function") {
-                         openQRModal();
-                     }
-                 };
-                 return div;
-             };
-             qrControl.addTo(map);
-         }
-
-         function addLocateButton(map) {
-             const locateControl = L.control({ position: "topright" });
-             let currentLocationMarker = null;
-
-             locateControl.onAdd = function () {
-                 const div = L.DomUtil.create("div", "locate-button");
-                 div.innerHTML = `<div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                         <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
-                     </svg>
-                 </div>`;
-
-                 div.addEventListener("click", function () {
-                     if (navigator.geolocation) {
-                         const loadingMessage = L.control({ position: "topleft" });
-
-                         loadingMessage.onAdd = function () {
-                             const loadingDiv = L.DomUtil.create("div", "loading-message");
-                             loadingDiv.innerHTML = `
-                                 <div style="background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); font-family: sans-serif;">
-                                     <span>Locating ...</span>
-                                 </div>`;
-                             return loadingDiv;
-                         };
-
-                         loadingMessage.addTo(map);
-
-                         navigator.geolocation.getCurrentPosition(
-                             function (position) {
-                                 const { latitude: userLat, longitude: userLng } = position.coords;
-                                 map.setView([userLat, userLng], 15);
-
-                                 if (currentLocationMarker) {
-                                     map.removeLayer(currentLocationMarker);
-                                 }
-
-                                 currentLocationMarker = L.circle([userLat, userLng], {
-                                     color: "blue",
-                                     fillColor: "#30f",
-                                     fillOpacity: 0.5,
-                                     radius: 10,
-                                 }).addTo(map);
-
-                                 map.removeControl(loadingMessage);
-                             },
-                             function (error) {
-                                 if (loadingMessage) map.removeControl(loadingMessage);
-                             },
-                             {
-                                 enableHighAccuracy: true,
-                                 timeout: 5000,
-                                 maximumAge: 0,
-                             }
-                         );
-                     }
-                 });
-
-                 return div;
-             };
-
-             locateControl.addTo(map);
-         }
-
-
-         function addThumbnailToMap(lat, lon, imageUrl, fileName) {
-             const thumbnailSize = 100;
-             const thumbnailIcon = L.divIcon({
-                 className: 'thumbnail-marker',
-                 html: `<img src="${imageUrl}" alt="Thumbnail" style="cursor: pointer;" />`,
-                 iconSize: [thumbnailSize, thumbnailSize],
-                 iconAnchor: [thumbnailSize / 2, thumbnailSize / 2]
-             });
-             const marker = L.marker([lat, lon], { icon: thumbnailIcon }).addTo(map);
-             marker.on('click', () => {
-                 openModal(fileName);
-             });
-         }
-
-         function closeModal() {
-             modalOverlay.style.display = 'none';
-             modalImage.src = '';
-             modalFilename.textContent = '';
-             modalImage.onload = null;
-             modalImage.onerror = null;
-         }
-
-
-
-         function closeQRModal() {
-             const qrModalOverlay = document.getElementById('qrModalOverlay');
-             qrModalOverlay.style.display = 'none';
-         }
-
-
-
-         function convertGpsToDecimal(gpsData, ref) {
-             if (!gpsData || gpsData.length < 3) {
-                 return null;
-             }
-             try {
-                 const degrees = gpsData[0][0] / (gpsData[0][1] || 1);
-                 const minutes = gpsData[1][0] / (gpsData[1][1] || 1);
-                 const seconds = gpsData[2][0] / (gpsData[2][1] || 1);
-                 const decimal = degrees + minutes / 60 + seconds / 3600;
-                 return (ref === "S" || ref === "W") ? -decimal : decimal;
-             } catch (error) {
-                 return null;
-             }
-         }
-
-         function fetchAndProcessImage(fileName, resolve, reject) {
-             const imageUrl = `min/${decodeURIComponent(fileName)}`;
-
-             fetch(imageUrl)
-                 .then(response => {
-                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                     return response.blob();
-                 })
-                 .then(blob => {
-                     const reader = new FileReader();
-                     reader.onload = function (event) {
-                         try {
-                             let exifData = null;
-                             try { exifData = piexif.load(event.target.result); } catch (e) { resolve({ fileName, gps: null, dateTime: null }); return; }
-                             const gps = processImageForMap(exifData);
-                             const dateTime = exifData["Exif"] && exifData["Exif"][piexif.ExifIFD.DateTimeOriginal]
-                                 ? exifData["Exif"][piexif.ExifIFD.DateTimeOriginal]
-                                 : null;
-                             if (gps) {
-                                 const blobUrl = URL.createObjectURL(blob);
-                                 objectUrlsToCleanup.add(blobUrl);
-                                 addThumbnailToMap(gps.lat, gps.lon, blobUrl, fileName);
-                             }
-                             resolve({ fileName, gps, dateTime });
-                         } catch (error) {
-                             resolve({ fileName, gps: null, dateTime: null });
-                         }
-                     };
-
-
-                     reader.readAsDataURL(blob);
-                 })
-                 .catch(error => {
-                     reject(`Error loading image ${fileName}: ${error.message}`);
-                 });
-         }
-
-
-
-         function fitMapToMarkers(map) {
-             const allMarkers = [];
-             map.eachLayer(layer => {
-                 if (layer instanceof L.Marker) {
-                     allMarkers.push(layer.getLatLng());
-                 }
-             });
-             if (allMarkers.length > 0) {
-                 const bounds = L.latLngBounds(allMarkers);
-                 map.fitBounds(bounds, { padding: [50, 50] });
-             }
-         }
-
-
-
-         function formatDateTime(dateTime) {
-             if (!dateTime) return null;
-             try {
-                 const [datePart, timePart] = dateTime.split(" ");
-                 const formattedDate = datePart.replace(/:/g, "-");
-                 const formattedTime = timePart.substring(0, 5);
-                 return `${formattedDate} ${formattedTime}`;
-             } catch (error) {
-                 return dateTime;
-             }
-         }
-
-
-
-         function getMapLink(lat, lon) {
-             const ua = navigator.userAgent || navigator.vendor || window.opera;
-             let googleMapsLink = `https://maps.google.com/?q=${lat},${lon}`;
-             let secondLink = `https://brouter.de/brouter-web/#map=18/${lat}/${lon}/osm-mapnik-german_style&lonlats=${lon},${lat}&pois=${lon},${lat},Position`;
-
-             if (/iPad|iPhone|iPod/.test(ua)) {
-                 secondLink = `comgooglemaps://?center=${lat},${lon}&zoom=18`;
-             } else if (/android/i.test(ua)) {
-                 secondLink = `geo:${lat},${lon}`;
-             }
-             return { googleMapsLink, secondLink };
-         }
-
-
-         function loadGpxTracks() {
-             gpxFiles.forEach((gpxFile, index) => {
-                 const color = trackColors[index % trackColors.length];
-                 const gpxLayer = new L.GPX('gpx/' + decodeURIComponent(gpxFile), {
-                     async: true,
-                     marker_options: {
-                         startIconUrl: false,
-                         endIconUrl: false,
-                         shadowUrl: ''
-                     },
-                     polyline_options: {
-                         color: color,
-                         weight: 5,
-                         opacity: 0.8,
-                         lineCap: 'round'
-                     }
-                 });
-                 gpxLayer.addTo(map);
-             });
-         }
-
-         function openModal(fileName) {
-             currentImageIndex = images.indexOf(fileName);
-             if (currentImageIndex === -1) {
-                 return;
-             }
-             const fileNameToLoad = images[currentImageIndex];
-             const imgUrl = `img/${decodeURIComponent(fileNameToLoad)}`;
-             modalImage.src = imgUrl;
-             modalImage.onload = () => {
-                 updateModalContent();
-                 updateButtonSymbols();
-                 modalOverlay.style.display = 'flex';
-             };
-         }
-
-
-
-         function openQRModal() {
-             const qrCodeContainer = document.getElementById('qrCode');
-             const qrUrl = document.getElementById('qrUrl');
-             let currentUrl = window.location.href;
-             if (currentUrl.endsWith('/')) {
-                 currentUrl = currentUrl.slice(0, -1);
-             }
-             qrCodeContainer.innerHTML = '';
-             new QRCode(qrCodeContainer, {
-                 text: currentUrl,
-                 width: 400,
-                 height: 400
-             });
-             qrUrl.href = currentUrl;
-             qrUrl.textContent = currentUrl;
-             qrUrl.style.color = 'blue';
-             qrUrl.style.textDecoration = 'underline';
-             qrModalOverlay.style.display = 'flex';
-             qrCodeContainer.addEventListener('click', () => {
-                 qrModalOverlay.style.display = 'none';
-             });
-         }
-
-
-         async function processAllImages(images) {
-             const validImages = images.filter(image => image);
-             const batchSize = 10;
-
-             for (let i = 0; i < validImages.length; i += batchSize) {
-                 const batch = validImages.slice(i, i + batchSize);
-                 const results = await Promise.allSettled(
-                     batch.map(image => {
-                         return new Promise((resolve, reject) => {
-                             fetchAndProcessImage(image, resolve, reject);
-                         });
-                     })
-                 );
-
-                 results.forEach(result => {
-                     if (result.status === 'fulfilled') {
-                         const { fileName, gps, dateTime } = result.value;
-                         imageDataMap.set(fileName, { gps, dateTime });
-                     }
-                 });
-                 await new Promise(resolve => setTimeout(resolve, 5));
-             }
-
-             if (imageDataMap.size > 0) {
-                 fitMapToMarkers(map);
-             }
-         }
-
-
-
-
-
-         function processImageForMap(exifData) {
-             if (!exifData || !exifData["GPS"]) {
-                 return null;
-             }
-             const gpsData = exifData["GPS"];
-             const lat = convertGpsToDecimal(gpsData[piexif.GPSIFD.GPSLatitude], gpsData[piexif.GPSIFD.GPSLatitudeRef]);
-             const lon = convertGpsToDecimal(gpsData[piexif.GPSIFD.GPSLongitude], gpsData[piexif.GPSIFD.GPSLongitudeRef]);
-             return lat && lon ? { lat, lon } : null;
-         }
-
-         function shortenCoordinates(lat, lon, precision = 6) {
-             const shortLat = parseFloat(lat.toFixed(precision));
-             const shortLon = parseFloat(lon.toFixed(precision));
-             return { lat: shortLat, lon: shortLon };
-         }
-
-
-         function updateModalContent() {
-             if (currentImageIndex < 0 || currentImageIndex >= images.length) {
-                 return;
-             }
-             const fileName = images[currentImageIndex];
-             const imgUrl = `img/${fileName}`;
-             const filenameWithoutExt = fileName.replace(/\.[^/.]+$/, "");
-             const minData = imageDataMap.get(fileName);
-             let x = "";
-             let y = "";
-             let minDateTime = "";
-             if (minData) {
-                 if (minData.gps) {
-                     const shortenedMinCoords = shortenCoordinates(minData.gps.lat, minData.gps.lon);
-                     x = shortenedMinCoords.lat;
-                     y = shortenedMinCoords.lon;
-                 }
-                 if (minData.dateTime) {
-                     minDateTime = formatDateTime(minData.dateTime);
-                 }
-             }
-             const { googleMapsLink, secondLink } = getMapLink(x, y);
-             const crosshairLinkGoogle = `<a href="${googleMapsLink}" target="_blank" rel="noopener" title="Open in Google Maps" style="text-decoration:none;vertical-align:middle;">${crosshairSVG}</a>`;
-             const crosshairLinkSecond = `<a href="${secondLink}" target="_blank" rel="noopener" title="Open Link" style="text-decoration:none;vertical-align:middle;">${greenCrosshairSVG}</a>`;
-             modalFilename.innerHTML = `
-               <div style="display: flex; align-items: center; gap: 8px;">
-                 <span>${filenameWithoutExt}</span>
-                 ${crosshairLinkGoogle}
-                 ${crosshairLinkSecond}
-               </div>
-               <div id="fileDateTime">
-                 ${minDateTime ? `${minDateTime}` : ""}
-               </div>
-             `;
-         }
-
-         function updateButtonSymbols() {
-             const prevButton = document.getElementById('prevImage');
-             const nextButton = document.getElementById('nextImage');
-             if (currentImageIndex === 0) {
-                 prevButton.classList.add('stop');
-                 prevButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                     <rect x="8" y="8" width="16" height="16" fill="gray"></rect>
-                 </svg>`;
-             } else {
-                 prevButton.classList.remove('stop');
-                 prevButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                     <path d="M20 4l-12 12 12 12z"></path>
-                 </svg>`;
-             }
-             if (currentImageIndex === images.length - 1) {
-                 nextButton.classList.add('stop');
-                 nextButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                     <rect x="8" y="8" width="16" height="16" fill="gray"></rect>
-                 </svg>`;
-             } else {
-                 nextButton.classList.remove('stop');
-                 nextButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                     <path d="M12 4l12 12-12 12z"></path>
-                 </svg>`;
-             }
-         }
-
-         function updateModalSize() {
-             const vh = window.innerHeight;
-             const modalContent = document.getElementById('modalContent');
-             const modalImage = document.getElementById('modalImage');
-             const modalFilename = document.getElementById('modalFilename');
-             modalContent.style.maxHeight = `${vh - 40}px`;
-             modalContent.style.maxWidth = `${window.innerWidth - 40}px`;
-             modalImage.style.maxHeight = `${vh - 100}px`;
-             modalImage.style.maxWidth = `${window.innerWidth - 40}px`;
-             modalFilename.style.maxHeight = `${vh - 20}px`;
-         }
-
-
-
-         document.getElementById('prevImage').addEventListener('click', () => {
-             if (currentImageIndex > 0) {
-                 currentImageIndex--;
-                 const fileName = images[currentImageIndex];
-                 const imgUrl = `img/${fileName}`;
-                 modalImage.src = imgUrl;
-                 modalImage.onload = () => {
-                     updateModalContent();
-                     updateButtonSymbols();
-                 };
-             }
-         });
-
-         document.getElementById('nextImage').addEventListener('click', () => {
-             if (currentImageIndex < images.length - 1) {
-                 currentImageIndex++;
-                 const fileName = images[currentImageIndex];
-                 const imgUrl = `img/${fileName}`;
-                 modalImage.src = imgUrl;
-                 modalImage.onload = () => {
-                     updateModalContent();
-                     updateButtonSymbols();
-                 };
-             }
-         });
-
-
-
-
-         const imageDataMap = new Map();
-         const objectUrlsToCleanup = new Set();
-         const trackColors = ['#FF0000', '#0000FF', '#00FF00', '#FFA500', '#800080', '#00FFFF', '#FF00FF', '#32CD32', '#FF69B4', '#FFFF00'];
-         const images = <?php echo json_encode(getImageList()); ?>;
-         const gpxFiles = <?php echo json_encode($gpxFiles); ?>;
-         const modalOverlay = document.getElementById('modalOverlay');
-         const modalImage = document.getElementById('modalImage');
-         const modalFilename = document.getElementById('modalFilename');
-         const map = L.map('map', {
-             preferCanvas: true
-         });
-
-
-         const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-             maxZoom: 19,
-             attribution: "&copy; OpenStreetMap contributors"
-         });
-
-         const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-             maxZoom: 20,
-             attribution: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community"
-         });
-
-         const baseLayers = {
-             "OpenStreetMap": osmLayer,
-             "Satellite": satelliteLayer
-         };
-
-         osmLayer.addTo(map);
-         L.control.layers(baseLayers).addTo(map);
-
-
-         const galleryButton = L.control({ position: 'topright' });
-         galleryButton.onAdd = function (map) {
-             const div = L.DomUtil.create('div', 'gallery-button-container');
-             div.innerHTML = `
-                <a href="gallery.php?path=img" target="_blank" class="gallery-button">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                </a>
-             `;
-             return div;
-         };
-
-         galleryButton.addTo(map);
-         addQrButton(map);
-         addLocateButton(map);
-
-
-         const qrModalOverlay = document.getElementById('qrModalOverlay');
-
-         modalImage.onclick = closeModal;
-
-         modalOverlay.onclick = (e) => {
-             if(e.target === modalOverlay) {
-                 closeModal();
-             }
-         };
-
-         qrModalOverlay.onclick = (e) => {
-             if (e.target === qrModalOverlay) {
-                 closeQRModal();
-             }
-         };
-
-         window.addEventListener('resize', updateModalSize);
-
-
-         updateModalSize();
-
-         if (images.length === 0) {
-             map.setView([0, 0], 2);
-             loadGpxTracks();
-         } else {
-             processAllImages(images).then(() => {
-                 fitMapToMarkers(map);
-                 setTimeout(loadGpxTracks, 50);
-             });
-         }
-
-
+    class PhotoTrackViewer {
+        #crosshairSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 34.89"><path d="M2.5 8.11c-1.26 1.34-2.05 3.3-2.02 5.14 0.06 3.84 1.8 5.3 4.57 10.59 1 2.33 2.04 4.79 3.03 8.87 0.14 0.6 0.27 1.16 0.33 1.21 0.06 0.05 0.2-0.51 0.33-1.11 0.99-4.08 2.03-6.54 3.03-8.87 2.77-5.29 4.5-6.75 4.57-10.59 0.03-1.84-0.76-3.8-2.02-5.14-1.44-1.53-3.61-2.67-5.92-2.72-2.31-0.05-4.48 1.09-5.92 2.62z" fill="#ff4646" stroke="#d73534" stroke-width="1"/><circle cx="10" cy="14.87" r="3.04" fill="#590000"/></svg>`;
+        #greenCrosshairSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 34.89"><path d="M2.5 8.11c-1.26 1.34-2.05 3.3-2.02 5.14 0.06 3.84 1.8 5.3 4.57 10.59 1 2.33 2.04 4.79 3.03 8.87 0.14 0.6 0.27 1.16 0.33 1.21 0.06 0.05 0.2-0.51 0.33-1.11 0.99-4.08 2.03-6.54 3.03-8.87 2.77-5.29 4.5-6.75 4.57-10.59 0.03-1.84-0.76-3.8-2.02-5.14-1.44-1.53-3.61-2.67-5.92-2.72-2.31-0.05-4.48 1.09-5.92 2.62z" fill="#46ff46" stroke="#34d735" stroke-width="1"/><circle cx="10" cy="14.87" r="3.04" fill="#005900"/></svg>`;
+        #trackColors = ['#FF0000', '#0000FF', '#00FF00', '#FFA500', '#800080', '#00FFFF', '#FF00FF', '#32CD32', '#FF69B4', '#FFFF00'];
+
+        constructor(images, gpxFiles) {
+            this.images = images;
+            this.gpxFiles = gpxFiles;
+
+            this.currentImageIndex = 0;
+            this.imageDataMap = new Map();
+            this.objectUrlsToCleanup = new Set();
+            this.currentLocationMarker = null;
+
+
+            this.modalOverlay = document.getElementById('modalOverlay');
+            this.modalImage = document.getElementById('modalImage');
+            this.modalFilename = document.getElementById('modalFilename');
+            this.qrModalOverlay = document.getElementById('qrModalOverlay');
+            this.qrCodeContainer = document.getElementById('qrCode');
+            this.qrUrl = document.getElementById('qrUrl');
+            
+            this.map = L.map('map', { preferCanvas: true });
+        }
+
+        init() {
+            this.#initMapLayers();
+            this.#initControls();
+            this.#initEventListeners();
+            this.#updateModalSize();
+
+            if (this.images.length === 0) {
+                this.map.setView([0, 0], 2);
+                this.#loadGpxTracks();
+            } else {
+                this.#processAllImages().then(() => {
+                    this.#fitMapToMarkers();
+                    setTimeout(() => this.#loadGpxTracks(), 50);
+                });
+            }
+        }
+        
+        #initMapLayers() {
+            const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            });
+            const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+                maxZoom: 20,
+                attribution: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community"
+            });
+            const baseLayers = { "OpenStreetMap": osmLayer, "Satellite": satelliteLayer };
+            osmLayer.addTo(this.map);
+            L.control.layers(baseLayers).addTo(this.map);
+        }
+
+        #initControls() {
+            this.#addGalleryButton();
+            this.#addQrButton();
+            this.#addLocateButton();
+        }
+
+        #initEventListeners() {
+            document.getElementById('prevImage').addEventListener('click', () => this.#navigateImage(-1));
+            document.getElementById('nextImage').addEventListener('click', () => this.#navigateImage(1));
+            this.modalImage.onclick = () => this.#closeModal();
+            this.modalOverlay.onclick = (e) => {
+                if (e.target === this.modalOverlay) this.#closeModal();
+            };
+            this.qrModalOverlay.onclick = (e) => {
+                if (e.target === this.qrModalOverlay) this.#closeQRModal();
+            };
+            this.qrCodeContainer.addEventListener('click', () => this.#closeQRModal());
+            window.addEventListener('resize', () => this.#updateModalSize());
+
+            window.addEventListener('beforeunload', () => {
+                this.objectUrlsToCleanup.forEach(url => URL.revokeObjectURL(url));
+            });
+        }
+
+        #navigateImage(direction) {
+            const newIndex = this.currentImageIndex + direction;
+            if (newIndex >= 0 && newIndex < this.images.length) {
+                this.currentImageIndex = newIndex;
+                const fileName = this.images[this.currentImageIndex];
+                this.modalImage.src = `img/${fileName}`;
+                this.modalImage.onload = () => {
+                    this.#updateModalContent();
+                    this.#updateButtonSymbols();
+                };
+            }
+        }
+        
+        #addGalleryButton() {
+            const galleryButton = L.control({ position: 'topright' });
+            galleryButton.onAdd = () => {
+                const div = L.DomUtil.create('div', 'gallery-button-container');
+                div.innerHTML = `<a href="gallery.php?path=img" target="_blank" class="gallery-button"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></a>`;
+                return div;
+            };
+            galleryButton.addTo(this.map);
+        }
+
+        #addQrButton() {
+            const qrControl = L.control({ position: "topright" });
+            qrControl.onAdd = () => {
+                const div = L.DomUtil.create("div", "qr-button");
+                div.title = "Show QR-Code";
+                div.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zM13 13h2v2h-2v-2zm0 3h2v2h-2v-2z"/></svg>`;
+                L.DomEvent.disableClickPropagation(div);
+                div.onclick = () => this.#openQRModal();
+                return div;
+            };
+            qrControl.addTo(this.map);
+        }
+
+        #addLocateButton() {
+            const locateControl = L.control({ position: "topright" });
+            locateControl.onAdd = () => {
+                const div = L.DomUtil.create("div", "locate-button");
+                div.innerHTML = `<div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg></div>`;
+                div.addEventListener("click", () => {
+                    if (navigator.geolocation) {
+                        const loadingMessage = L.control({ position: "topleft" });
+                        loadingMessage.onAdd = () => {
+                            const loadingDiv = L.DomUtil.create("div", "loading-message");
+                            loadingDiv.innerHTML = `<div style="background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); font-family: sans-serif;"><span>Locating ...</span></div>`;
+                            return loadingDiv;
+                        };
+                        loadingMessage.addTo(this.map);
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const { latitude: userLat, longitude: userLng } = position.coords;
+                                this.map.setView([userLat, userLng], 15);
+                                if (this.currentLocationMarker) {
+                                    this.map.removeLayer(this.currentLocationMarker);
+                                }
+                                this.currentLocationMarker = L.circle([userLat, userLng], { color: "blue", fillColor: "#30f", fillOpacity: 0.5, radius: 10 }).addTo(this.map);
+                                this.map.removeControl(loadingMessage);
+                            },
+                            (error) => {
+                                if (loadingMessage) this.map.removeControl(loadingMessage);
+                                const errorMessage = L.control({ position: "topleft" });
+                                errorMessage.onAdd = function () {
+                                    const errorDiv = L.DomUtil.create("div", "error-message");
+                                    errorDiv.innerHTML = `<div style="background: #ffdddd; color: #d8000c; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); font-family: sans-serif;"><span>Locating error ...</span></div>`;
+                                    return errorDiv;
+                                };
+                                errorMessage.addTo(this.map);
+                                setTimeout(() => this.map.removeControl(errorMessage), 3000);
+                            },
+                            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                        );
+                    }
+                });
+                return div;
+            };
+            locateControl.addTo(this.map);
+        }
+
+        #addThumbnailToMap(lat, lon, imageUrl, fileName) {
+            const thumbnailSize = 100;
+            const thumbnailIcon = L.divIcon({
+                className: 'thumbnail-marker',
+                html: `<img src="${imageUrl}" alt="Thumbnail" style="cursor: pointer;" />`,
+                iconSize: [thumbnailSize, thumbnailSize],
+                iconAnchor: [thumbnailSize / 2, thumbnailSize / 2]
+            });
+            const marker = L.marker([lat, lon], { icon: thumbnailIcon }).addTo(this.map);
+            marker.on('click', () => this.#openModal(fileName));
+        }
+
+        #openModal(fileName) {
+            this.currentImageIndex = this.images.indexOf(fileName);
+            if (this.currentImageIndex === -1) return;
+            
+            const fileNameToLoad = this.images[this.currentImageIndex];
+            this.modalImage.src = `img/${decodeURIComponent(fileNameToLoad)}`;
+            this.modalImage.onload = () => {
+                this.#updateModalContent();
+                this.#updateButtonSymbols();
+                this.modalOverlay.style.display = 'flex';
+            };
+        }
+
+        #closeModal() {
+            this.modalOverlay.style.display = 'none';
+            this.modalImage.src = '';
+            this.modalFilename.textContent = '';
+            this.modalImage.onload = null;
+            this.modalImage.onerror = null;
+            modalImage.onerror = null;
+        }
+
+        #openQRModal() {
+            let currentUrl = window.location.href;
+            if (currentUrl.endsWith('/')) {
+                currentUrl = currentUrl.slice(0, -1);
+            }
+            this.qrCodeContainer.innerHTML = '';
+            new QRCode(this.qrCodeContainer, { text: currentUrl, width: 400, height: 400 });
+            this.qrUrl.href = currentUrl;
+            this.qrUrl.textContent = currentUrl;
+            this.qrModalOverlay.style.display = 'flex';
+        }
+
+        #closeQRModal() {
+            this.qrModalOverlay.style.display = 'none';
+        }
+        
+        async #processAllImages() {
+            const validImages = this.images.filter(image => image);
+            const batchSize = 10;
+            for (let i = 0; i < validImages.length; i += batchSize) {
+                const batch = validImages.slice(i, i + batchSize);
+                const results = await Promise.allSettled(
+                    batch.map(image => new Promise((resolve, reject) => this.#fetchAndProcessImage(image, resolve, reject)))
+                );
+                results.forEach(result => {
+                    if (result.status === 'fulfilled' && result.value) {
+                        const { fileName, gps, dateTime } = result.value;
+                        this.imageDataMap.set(fileName, { gps, dateTime });
+                    }
+                });
+                await new Promise(resolve => setTimeout(resolve, 5));
+            }
+        }
+        
+        #fetchAndProcessImage(fileName, resolve, reject) {
+            fetch(`min/${decodeURIComponent(fileName)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.blob();
+                })
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            let exifData = null;
+                            try { exifData = piexif.load(event.target.result); } catch (e) {
+                                resolve({ fileName, gps: null, dateTime: null });
+                                return;
+                            }
+                            const gps = this.#processGpsData(exifData);
+                            const dateTime = exifData?.Exif?.[piexif.ExifIFD.DateTimeOriginal] || null;
+                            if (gps) {
+                                const blobUrl = URL.createObjectURL(blob);
+                                this.objectUrlsToCleanup.add(blobUrl);
+                                this.#addThumbnailToMap(gps.lat, gps.lon, blobUrl, fileName);
+                            }
+                            resolve({ fileName, gps, dateTime });
+                        } catch (error) {
+                            resolve({ fileName, gps: null, dateTime: null });
+                        }
+                    };
+                    reader.readAsDataURL(blob);
+                })
+                .catch(error => reject(`Error loading image ${fileName}: ${error.message}`));
+        }
+        
+        #processGpsData(exifData) {
+            if (!exifData?.GPS) return null;
+            const gpsData = exifData.GPS;
+            const lat = this.#convertGpsToDecimal(gpsData[piexif.GPSIFD.GPSLatitude], gpsData[piexif.GPSIFD.GPSLatitudeRef]);
+            const lon = this.#convertGpsToDecimal(gpsData[piexif.GPSIFD.GPSLongitude], gpsData[piexif.GPSIFD.GPSLongitudeRef]);
+            return lat && lon ? { lat, lon } : null;
+        }
+
+        #convertGpsToDecimal(gpsData, ref) {
+            if (!gpsData || gpsData.length < 3) return null;
+            try {
+                const degrees = gpsData[0][0] / (gpsData[0][1] || 1);
+                const minutes = gpsData[1][0] / (gpsData[1][1] || 1);
+                const seconds = gpsData[2][0] / (gpsData[2][1] || 1);
+                const decimal = degrees + minutes / 60 + seconds / 3600;
+                return (ref === "S" || ref === "W") ? -decimal : decimal;
+            } catch {
+                return null;
+            }
+        }
+
+        #fitMapToMarkers() {
+            const allMarkers = [];
+            this.map.eachLayer(layer => {
+                if (layer instanceof L.Marker) allMarkers.push(layer.getLatLng());
+            });
+            if (allMarkers.length > 0) {
+                const bounds = L.latLngBounds(allMarkers);
+                this.map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+
+        #loadGpxTracks() {
+            this.gpxFiles.forEach((gpxFile, index) => {
+                const color = this.#trackColors[index % this.#trackColors.length];
+                new L.GPX('gpx/' + decodeURIComponent(gpxFile), {
+                    async: true,
+                    marker_options: { startIconUrl: false, endIconUrl: false, shadowUrl: '' },
+                    polyline_options: { color, weight: 5, opacity: 0.8, lineCap: 'round' }
+                }).addTo(this.map);
+            });
+        }
+        
+        #updateModalContent() {
+            if (this.currentImageIndex < 0 || this.currentImageIndex >= this.images.length) return;
+            const fileName = this.images[this.currentImageIndex];
+            const filenameWithoutExt = fileName.replace(/\.[^/.]+$/, "");
+            const minData = this.imageDataMap.get(fileName);
+            let lat = "", lon = "", minDateTime = "";
+            if (minData) {
+                if (minData.gps) {
+                    ({ lat, lon } = this.#shortenCoordinates(minData.gps.lat, minData.gps.lon));
+                }
+                minDateTime = this.#formatDateTime(minData.dateTime);
+            }
+            const { googleMapsLink, secondLink } = this.#getMapLink(lat, lon);
+            const crosshairLinkGoogle = lat ? `<a href="${googleMapsLink}" target="_blank" rel="noopener" title="Open in Google Maps" style="text-decoration:none;vertical-align:middle;">${this.#crosshairSVG}</a>` : '';
+            const crosshairLinkSecond = lat ? `<a href="${secondLink}" target="_blank" rel="noopener" title="Open Link" style="text-decoration:none;vertical-align:middle;">${this.#greenCrosshairSVG}</a>` : '';
+            this.modalFilename.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span>${filenameWithoutExt}</span>
+                    ${crosshairLinkGoogle}
+                    ${crosshairLinkSecond}
+                </div>
+                <div id="fileDateTime">${minDateTime || ""}</div>`;
+        }
+
+        #updateButtonSymbols() {
+            const prevButton = document.getElementById('prevImage');
+            const nextButton = document.getElementById('nextImage');
+            const isFirst = this.currentImageIndex === 0;
+            const isLast = this.currentImageIndex === this.images.length - 1;
+
+            prevButton.classList.toggle('stop', isFirst);
+            prevButton.innerHTML = isFirst
+                ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect x="8" y="8" width="16" height="16" fill="gray"></rect></svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M20 4l-12 12 12 12z"></path></svg>`;
+
+            nextButton.classList.toggle('stop', isLast);
+            nextButton.innerHTML = isLast
+                ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect x="8" y="8" width="16" height="16" fill="gray"></rect></svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M12 4l12 12-12 12z"></path></svg>`;
+        }
+        
+        #updateModalSize() {
+            const vh = window.innerHeight;
+            const vw = window.innerWidth;
+            document.getElementById('modalContent').style.maxHeight = `${vh - 40}px`;
+            document.getElementById('modalContent').style.maxWidth = `${vw - 40}px`;
+            this.modalImage.style.maxHeight = `${vh - 100}px`;
+            this.modalImage.style.maxWidth = `${vw - 40}px`;
+        }
+        
+        #formatDateTime(dateTime) {
+            if (!dateTime) return null;
+            try {
+                const [datePart, timePart] = dateTime.split(" ");
+                const formattedDate = datePart.replace(/:/g, "-");
+                return `${formattedDate} ${timePart.substring(0, 5)}`;
+            } catch {
+                return dateTime;
+            }
+        }
+
+        #getMapLink(lat, lon) {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            let googleMapsLink = `https://maps.google.com/?q=${lat},${lon}`;
+            let secondLink = `https://brouter.de/brouter-web/#map=18/${lat}/${lon}/osm-mapnik-german_style&lonlats=${lon},${lat}&pois=${lon},${lat},Position`;
+
+            if (/iPad|iPhone|iPod/.test(ua)) {
+                secondLink = `comgooglemaps://?center=${lat},${lon}&zoom=18`;
+            } else if (/android/i.test(ua)) {
+                secondLink = `geo:${lat},${lon}`;
+            }
+            return { googleMapsLink, secondLink };
+        }
+
+        #shortenCoordinates(lat, lon, precision = 6) {
+            return { lat: parseFloat(lat.toFixed(precision)), lon: parseFloat(lon.toFixed(precision)) };
+        }
+    }
+
+    const images = <?php echo json_encode(getImageList()); ?>;
+    const gpxFiles = <?php echo json_encode($gpxFiles); ?>;
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const app = new PhotoTrackViewer(images, gpxFiles);
+        app.init();
+    });
          
       </script>
    </body>
