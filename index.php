@@ -24,22 +24,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ----------------------------------------------------------------------------- */
-
+<?php
 function getImageList() {
     $minImages = glob("min/*.{jpg,jpeg,JPG,JPEG}", GLOB_BRACE);
     $validImages = [];
 
-    foreach ($minImages as $minPath) {
+    foreach ($minImages as$minPath) {
         $filename = basename($minPath);
         if (file_exists("img/" . $filename)) {
-            $validImages[] = $filename;
+            $validImages[] =$filename;
         }
     }
 
     return $validImages;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'getImages') {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) &&$_GET['action'] === 'getImages') {
     header('Content-Type: application/json');
     echo json_encode(getImageList());
     exit;
@@ -51,13 +51,13 @@ $gpxFiles = array_map('basename', glob("gpx/*.gpx") ?: []);
 
 
 $currentDir = basename(__DIR__);
-$title = $currentDir;
+$title =$currentDir;
 
 ?>
 
 
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">  // change here to "de" for german time setting
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -680,9 +680,34 @@ function updateButtonSymbols() {
 function formatDateTime(dateTime) {
     if (!dateTime) return null;
     try {
-        const [date, time] = dateTime.split(" ");
-        const [year, month, day] = date.split(":");
-        return `${day}.${month}.${year} ${time} Uhr`;
+        // EXIF Format ist z.B. "2026:10:18 05:45:00" oder ähnlich
+        const [datePart, timePart] = dateTime.split(" ");
+        const [year, month, day] = datePart.split(":");
+        const [hour, minute] = timePart.split(":");
+
+        // Erzeuge ein echtes JS-Date-Objekt (Monat ist 0-basiert: 0 = Januar, 9 = Oktober)
+        const dateObj = new Date(year, month - 1, day, hour, minute);
+
+        // Ermittle die Sprache direkt aus dem HTML-Tag (z. B. lang="de" oder lang="en"), Standard ist 'de-DE'
+        const locale = document.documentElement.lang === 'en' ? 'en-US' : 'de-DE';
+
+        const options = {
+            year: 'numeric',
+            month: 'short', // 'short' verhindert Zahlendreher durch Kürzel wie "Okt." / "Oct"
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: locale.startsWith('en')
+        };
+
+        let formatted = new Intl.DateTimeFormat(locale, options).format(dateObj);
+
+        // Im Deutschen das "Uhr" hinten anhängen
+        if (locale.startsWith('de')) {
+            formatted += ' Uhr';
+        }
+
+        return formatted;
     } catch (error) {
         console.error("Fehler beim Formatieren des Datums:", error);
         return dateTime;
