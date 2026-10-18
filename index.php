@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ----------------------------------------------------------------------------- */
-<?php
+
 function getImageList() {
     $minImages = glob("min/*.{jpg,jpeg,JPG,JPEG}", GLOB_BRACE);
     $validImages = [];
