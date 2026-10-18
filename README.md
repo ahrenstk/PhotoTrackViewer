@@ -44,9 +44,9 @@
 
 1. Unzip PhotoTrackViewer.zip in a folder
 2. Open your website to test with the pictures and gpx-track from my demo (pictures and track from [Fortress Bourtange](https://www.bourtange.co.uk)) 
-4. Delete content or folders `min`, `img` and `gpx
+4. Delete content or folders `min`, `img` and `gpx`
 5. Upload images and gpx-tracks e.g. with `upload.php` or manually
-8. Open website again
+8. Open your website again
 
 ## License
 
