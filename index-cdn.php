@@ -419,7 +419,7 @@ $title = $currentDir;
                              const loadingDiv = L.DomUtil.create("div", "loading-message");
                              loadingDiv.innerHTML = `
                                  <div style="background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); font-family: sans-serif;">
-                                     <span>📍 Position wird ermittelt...</span>
+                                     <span>Locating ...</span>
                                  </div>`;
                              return loadingDiv;
                          };
