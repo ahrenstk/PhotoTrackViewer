@@ -324,46 +324,40 @@ $title = $currentDir;
       />
    </head>
    <body>
-      <div id="map"></div>
-      <div id="modalOverlay">
-         <div id="modalContent">
-            <button id="prevImage" style="position: absolute; left: 10px">
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                  <path d="M20 4l-12 12 12 12z"></path>
-               </svg>
-            </button>
-            <img id="modalImage" src="" alt="Large View" />
-            <button id="nextImage" style="position: absolute; right: 10px">
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                  <path d="M12 4l12 12-12 12z"></path>
-               </svg>
-            </button>
-
-            <div id="modalFilename">
-               <div style="display: flex; align-items: center; gap: 8px">
-                  <span id="fileName"></span>
-               </div>
-               <div
-                  id="fileDateTime"
-                  style="
-                     color: gray;
-                     font-weight: normal;
-                     font-size: 0.9em;
-                     margin-top: 4px;
-                     text-align: center;
-                  "
-               >
-                  <!-- Date and time will be inserted here -->
-               </div>
-            </div>
-         </div>
-      </div>
-      <div id="qrModalOverlay" class="qr-modal-overlay">
-         <div id="qrModalContent" class="qr-modal-content">
-            <div id="qrCode" class="qr-code"></div>
-            <a id="qrUrl" href="#" target="_blank" class="qr-url"></a>
-         </div>
-      </div>
+		<div id="map"></div>
+		
+		<div id="modalOverlay">
+		  <div id="modalContent">
+		    <button id="prevImage" style="position: absolute; left: 10px;">
+		      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+		        <path d="M20 4l-12 12 12 12z"></path>
+		      </svg>
+		    </button>
+		
+		    <img id="modalImage" src="" alt="Large View" />
+		
+		    <button id="nextImage" style="position: absolute; right: 10px;">
+		      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+		        <path d="M12 4l12 12-12 12z"></path>
+		      </svg>
+		    </button>
+		
+		    <div id="modalFilename">
+		      <div style="display: flex; align-items: center; gap: 8px;">
+		        <span id="fileName"></span>
+		      </div>
+		      <div id="fileDateTime" style="color: gray; font-weight: normal; font-size: 0.9em; margin-top: 4px; text-align: center;">
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<div id="qrModalOverlay" class="qr-modal-overlay">
+		  <div id="qrModalContent" class="qr-modal-content">
+		    <div id="qrCode" class="qr-code"></div>
+		    <a id="qrUrl" href="#" target="_blank" class="qr-url"></a>
+		  </div>
+		</div>
 
       <script src="js/leaflet.js"></script>
       <script src="js/gpx.js"></script>
