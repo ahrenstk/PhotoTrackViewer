@@ -749,6 +749,7 @@ $title = $currentDir;
         }
     }
 
+
     const images = <?php echo json_encode(getImageList()); ?>;
     const gpxFiles = <?php echo json_encode($gpxFiles); ?>;
 
@@ -757,6 +758,7 @@ $title = $currentDir;
         const app = new PhotoTrackViewer(images, gpxFiles);
         app.init();
     });
+
          
       </script>
    </body>
