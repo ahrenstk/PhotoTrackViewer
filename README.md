@@ -1,6 +1,6 @@
 # PhotoTrackViewer
 
-**PhotoTrackViewer** is a lightweight, single-page web application built with PHP and JavaScript that transforms your travel photos and GPX tracks into an interactive map-based tour viewer. You can use `index.php` with local copys of external CSS and JavaScript or `index-cdn.php` for loading CSS and JavaScript from CDNs. For multiple tours, copy the project into different folders.
+**PhotoTrackViewer** is a lightweight, single-page Leaflet web application built with PHP and JavaScript that transforms your travel photos and GPX tracks into an interactive map-based tour viewer. You can use `index.php` with local copys of external CSS and JavaScript or `index-cdn.php` for loading CSS and JavaScript from CDNs. For multiple tours, copy the project into different folders.
 
 **Demo**: **[https://ahrens.tk/Bourtange](https://ahrens.tk/Bourtange)** (more images than in the download version)
 
