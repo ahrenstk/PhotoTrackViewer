@@ -21,6 +21,7 @@
 * **Mobile QR Sharing**: Instantly generate and display a QR code for the current tour URL to easily open it on mobile devices.
 * **Zero Dependencies / Simple Setup**: Requires no heavy build tools or databases—just drop it into a directory with your photos and GPX files.
 * **Nice image names**: Rename your images before upload or after upload in `min` and `img`
+* **German time language**: set <html lang="de"> for german time language
 
 ## Project Structure
 
