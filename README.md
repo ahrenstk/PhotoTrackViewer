@@ -11,7 +11,7 @@
 
  
 
-##Features
+## Features
 
 * **Interactive Map Viewer**: Switch seamlessly between OpenStreetMap and Esri satellite layers.
 * **GPX Track Rendering**: Automatically loads and styles multiple GPX routes from the local directory.
