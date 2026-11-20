@@ -31,12 +31,16 @@
 ├── min/              # Thumbnail images (used for map markers)
 └── gpx/              # GPX track files (optional)
 
+
 ```
 
 ## Requirements
 
 * A web server with **PHP** support (PHP 7.4 or higher recommended).
 * Modern web browser with JavaScript enabled.
+
+---
+
 
 ## Getting Started
 
@@ -45,6 +49,8 @@
 4. Delete content or folders `min`, `img` and `gpx`
 5. Upload images and gpx-tracks e.g. with `upload.php` or manually
 8. Open your website again
+
+---
 
 ## License
 
