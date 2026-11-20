@@ -59,7 +59,8 @@ This project is licensed under the **MIT License**. You can find the licensing d
 
 ## Demo
 
-Pictures from **[Fortress Bourtange](https://www.bourtange.co.uk)**
+Pictures from **[Fortress Bourtange](https://www.bourtange.co.uk)**. See also **[github.com/ahrenstk/MapQuizzzes](https://github.com/ahrenstk/MapQuizzzes)** a nice interactive, GPS-supported outdoor puzzle tours for smartphones at the same location.
+
 
 
 ![PhotoTrackViewer](https://raw.githubusercontent.com/ahrenstk/PhotoTrackViewer/main/PhotoTrackViewer.jpg)
